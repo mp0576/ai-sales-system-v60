@@ -1,0 +1,27 @@
+{
+  "name": "AI Sales System - Provider Action Contract",
+  "version": 1,
+  "description": "n8n passes an action request to the API gateway; it does not hold provider secrets or bypass policy checks.",
+  "request": {
+    "execution_id": "uuid",
+    "correlation_id": "uuid",
+    "organization_id": "uuid",
+    "action_type": "SEND_MESSAGE | SEND_EMAIL | BOOK_MEETING | CREATE_CHECKOUT",
+    "idempotency_key": "string",
+    "payload": "object"
+  },
+  "requirements": [
+    "API authenticates the caller and derives/validates tenant scope",
+    "Gateway validates kill switch, outbound enablement, DNC and approvals",
+    "Provider credentials remain server-side",
+    "Provider calls execute outside database transactions",
+    "Persist action result and external provider ID idempotently",
+    "Payment success is only accepted from a verified provider webhook"
+  ],
+  "response": {
+    "action_id": "uuid",
+    "status": "EXECUTED | PENDING_APPROVAL | BLOCKED | FAILED | DUPLICATE",
+    "provider_result": "object",
+    "requires_human": "boolean"
+  }
+}

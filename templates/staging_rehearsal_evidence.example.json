@@ -1,0 +1,56 @@
+{
+  "environment": "staging",
+  "run_id": "replace-with-unique-run-id",
+  "started_at": "2026-10-14T12:00:00Z",
+  "checks": [
+    {
+      "check_name": "tenant_isolation",
+      "result": "BLOCKED",
+      "evidence_ref": "artifacts/tenant_isolation.log",
+      "evidence_sha256": "replace-with-64-character-artifact-sha256",
+      "observed_at": "2026-10-14T12:00:00Z"
+    },
+    {
+      "check_name": "concurrent_claim_single_winner",
+      "result": "BLOCKED",
+      "evidence_ref": "artifacts/concurrent_claim_single_winner.log",
+      "evidence_sha256": "replace-with-64-character-artifact-sha256",
+      "observed_at": "2026-10-14T12:00:00Z"
+    },
+    {
+      "check_name": "provider_idempotency_duplicate_suppressed",
+      "result": "BLOCKED",
+      "evidence_ref": "artifacts/provider_idempotency_duplicate_suppressed.log",
+      "evidence_sha256": "replace-with-64-character-artifact-sha256",
+      "observed_at": "2026-10-14T12:00:00Z"
+    },
+    {
+      "check_name": "unknown_outcome_reconciliation",
+      "result": "BLOCKED",
+      "evidence_ref": "artifacts/unknown_outcome_reconciliation.log",
+      "evidence_sha256": "replace-with-64-character-artifact-sha256",
+      "observed_at": "2026-10-14T12:00:00Z"
+    },
+    {
+      "check_name": "expired_lease_no_redispatch",
+      "result": "BLOCKED",
+      "evidence_ref": "artifacts/expired_lease_no_redispatch.log",
+      "evidence_sha256": "replace-with-64-character-artifact-sha256",
+      "observed_at": "2026-10-14T12:00:00Z"
+    },
+    {
+      "check_name": "audit_trail_complete",
+      "result": "BLOCKED",
+      "evidence_ref": "artifacts/audit_trail_complete.log",
+      "evidence_sha256": "replace-with-64-character-artifact-sha256",
+      "observed_at": "2026-10-14T12:00:00Z"
+    },
+    {
+      "check_name": "live_actions_disabled",
+      "result": "BLOCKED",
+      "evidence_ref": "artifacts/live_actions_disabled.log",
+      "evidence_sha256": "replace-with-64-character-artifact-sha256",
+      "observed_at": "2026-10-14T12:00:00Z"
+    }
+  ]
+}

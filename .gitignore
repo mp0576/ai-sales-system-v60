@@ -1,0 +1,8 @@
+.venv/
+.venv-py315/
+__pycache__/
+.pytest_cache/
+data/
+.env
+.env.*
+!.env.example

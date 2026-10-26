@@ -1,0 +1,2 @@
+organization_id,external_id,name,email,phone,source,consent_status,consent_at
+agency-demo,crm-001,Exemplo de Contacto,contacto@example.invalid,+351000000000,website,opt_in,2026-10-01T10:00:00Z

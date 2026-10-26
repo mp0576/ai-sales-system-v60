@@ -1,0 +1,41 @@
+{
+  "organization_id": "agency-demo",
+  "leads": [
+    {
+      "lead_id": "lead-qualified-001",
+      "source": "website-form",
+      "consent_to_contact": true,
+      "purpose": "buy",
+      "property_type": "apartment",
+      "location": "Braga",
+      "budget_max_eur": 280000,
+      "timeline_days": 30,
+      "financing_confirmed": true,
+      "visit_requested": true,
+      "visit_slot_available": true
+    },
+    {
+      "lead_id": "lead-no-consent-002",
+      "source": "import",
+      "consent_to_contact": false,
+      "purpose": "rent",
+      "property_type": "apartment",
+      "location": "Braga",
+      "budget_max_eur": 900,
+      "timeline_days": 14,
+      "visit_requested": true
+    },
+    {
+      "lead_id": "lead-approval-003",
+      "source": "website-form",
+      "consent_to_contact": true,
+      "purpose": "buy",
+      "property_type": "house",
+      "location": "Guimarães",
+      "budget_max_eur": 450000,
+      "timeline_days": 30,
+      "financing_confirmed": true,
+      "requested_discount_percent": 15
+    }
+  ]
+}

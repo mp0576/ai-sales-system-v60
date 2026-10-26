@@ -1,0 +1,5 @@
+-- Production migration notes for the next database stage.
+-- Enforce idempotency at DB level with UNIQUE(organization_id, idempotency_key).
+-- Enforce provider webhook uniqueness with UNIQUE(provider, external_event_id).
+-- Workers should claim tasks using SELECT ... FOR UPDATE SKIP LOCKED.
+-- Never perform external provider calls inside a DB transaction.

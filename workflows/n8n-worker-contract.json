@@ -1,0 +1,18 @@
+{
+  "name": "AI Sales System - Worker Contract",
+  "version": "1.0",
+  "trigger": "cron_or_webhook",
+  "steps": [
+    "claim_due_outbox",
+    "POST /internal/worker/execute",
+    "receive_execution_result",
+    "complete_or_retry_outbox",
+    "dead_letter_after_retry_budget"
+  ],
+  "rules": {
+    "provider_calls_outside_db_transaction": true,
+    "idempotency_required": true,
+    "tenant_context_required": true,
+    "human_approval_must_pause_execution": true
+  }
+}

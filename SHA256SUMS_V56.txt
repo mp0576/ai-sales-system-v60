@@ -1,0 +1,3 @@
+AI Sales System MVP v56
+Added: CI workflow and read-only staging acceptance pipeline.
+See CI_STAGING_ACCEPTANCE_V56.md for setup and limits.

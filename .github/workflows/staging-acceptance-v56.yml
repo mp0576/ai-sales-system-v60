@@ -1,0 +1,113 @@
+name: AI Sales System v56 — CI and staging acceptance
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-quality:
+    name: Static quality gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-runtime.txt
+      - name: Install runtime and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-runtime.txt pytest
+      - name: Compile Python
+        run: python -m compileall -q app scripts tests
+      - name: Test suite
+        run: python -m pytest -q
+      - name: RPC contract checks
+        run: python scripts/check_rpc_contracts.py
+      - name: Static release gate
+        run: python scripts/release_gate.py --static-only
+
+  live-staging-readonly:
+    name: Live staging tenant isolation (read-only)
+    if: github.event_name == 'workflow_dispatch'
+    needs: static-quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: staging
+    env:
+      STAGING_API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
+      STAGING_ORG_A: ${{ secrets.STAGING_ORG_A }}
+      STAGING_ORG_B: ${{ secrets.STAGING_ORG_B }}
+      STAGING_USER_A_TOKEN: ${{ secrets.STAGING_USER_A_TOKEN }}
+      STAGING_USER_B_TOKEN: ${{ secrets.STAGING_USER_B_TOKEN }}
+      STAGING_EXISTING_LEAD_A: ${{ secrets.STAGING_EXISTING_LEAD_A }}
+      STAGING_EXISTING_LEAD_B: ${{ secrets.STAGING_EXISTING_LEAD_B }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run read-only staging probe
+        id: probe
+        shell: bash
+        run: |
+          set +e
+          python scripts/staging_readonly_probe_v55.py > staging-probe-report.json
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          # The probe deliberately excludes credentials from its report.
+          cat staging-probe-report.json
+          exit "$code"
+      - name: Upload sanitized staging report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-readonly-probe-${{ github.run_id }}
+          path: staging-probe-report.json
+          if-no-files-found: warn
+          retention-days: 14
+
+  release-provenance:
+    name: Build release artifact and provenance
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    needs: static-quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build exact source archive
+        shell: bash
+        run: |
+          mkdir -p dist
+          git archive --format=zip --output=dist/ai-sales-system-source.zip HEAD
+      - name: Create provenance manifest
+        run: |
+          python scripts/create_release_provenance_v59.py \\
+            --artifact dist/ai-sales-system-source.zip \\
+            --commit "$GITHUB_SHA" \\
+            --run-id "$GITHUB_RUN_ID" \\
+            --workflow "$GITHUB_WORKFLOW" \\
+            --output dist/release-provenance.json
+      - name: Upload release artifact and provenance
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-sales-system-release-${{ github.sha }}
+          path: |
+            dist/ai-sales-system-source.zip
+            dist/release-provenance.json
+          if-no-files-found: error
+          retention-days: 30
